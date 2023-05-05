@@ -1,0 +1,53 @@
+.formFiche{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.listeFiche{
+    border: 1px solid black;
+    padding: 20px;
+    
+}
+.containerFiche{
+    display: flex;
+    gap: 20px;
+}
+body{
+    font-family: 'Lexend Deca';
+    padding: 5px;
+}
+
+.nb{
+    color: #F4A261;
+}
+
+.heading-sf .page-name{
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    padding: 5px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgb(95, 95, 95);
+    margin-bottom: 50px;
+    opacity: 80%;
+}
+
+.heading-sf .page-name p{
+    margin: 0px;
+    font-weight: 600;
+}
+
+a{
+    color: rgb(36, 36, 36);
+}
+
+a:hover{
+    color: rgb(36, 36, 36);
+    text-decoration: none;
+}
+
+.heading-sf .page-name .page-icon{
+    width: 26px;
+    height: 26px;
+    margin-right: 10px;
+}

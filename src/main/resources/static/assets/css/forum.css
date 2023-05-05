@@ -1,0 +1,143 @@
+.forum-sf{
+    position: relative;
+    width: 60%;
+    height: max-content;
+    left: 310px;
+}
+
+.search form{
+    margin-bottom: 10px;
+}
+
+.search form input{
+    border: none;
+}
+
+.asking form input{
+    border: none;
+}
+
+.forum-sf form input[type='submit']{
+    border: none;
+    background-color: #E47B8A;
+    color: white;
+    font-weight: 500;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.respond form input[type='submit']{
+    background-color: #3AAEA0;
+}
+
+.question-containers .question{
+    background-color: #26465333;
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.question-containers .profile .profile-pic{
+    background-size: cover;
+    border-radius: 100%;
+    border: 2px white solid;
+}
+
+.creds .text{
+    margin-left: 10px;
+}
+
+.creds .username{
+    font-weight: 600;
+    font-size: small;
+}
+
+.creds p{
+    font-size: x-small;
+}
+
+.question-containers .creds{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.answer-container .answer{
+    background-color: #26465333;
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    opacity: 80%;
+}
+
+.recent .profile{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.question-containers .show-button{
+    width: 26px;
+    height: 26px;
+}
+
+.question-containers .show-button svg{
+    fill:#3AAEA0;
+}
+
+.respond{
+    border: .2px solid rgb(187, 187, 187);
+    padding: 10px;
+    border-radius: 20px;
+}
+.respond form{
+    display: flex;
+    flex-direction: column;
+}
+
+.respond form input[type='text']{
+    border: none;
+    margin-bottom: 50px;
+}
+
+.question-containers .profile-pic{
+    width: 30px;
+    height: 30px;
+}
+
+.question-containers .profile .text p{
+    margin: 0px;
+}
+
+.question-containers .text-question{
+    padding: 10px;
+}
+
+.creds .confirme-button{
+    background-size: cover;
+}
+
+.answer-container{
+    padding: 10px;
+}
+
+.answer-container .answer{
+    margin: 10px;
+    margin-top: 0px;
+}
+
+.answer-container .confirme-button{
+    width: 30px;
+    height: 30px;
+}
+
+.search-result{
+    margin-top: 50px;
+}
+
+@media (max-width:767px) {
+    .forum-sf{
+        width: 75%;
+        left: 80px;
+    }
+}

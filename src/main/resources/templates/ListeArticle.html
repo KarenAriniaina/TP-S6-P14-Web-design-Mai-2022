@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html lang="fr">
+    <head>
+        <title>Articles</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" th:href="@{/assets/css/bootstrap.css}">
+    </head>
+    <body>
+        <div class="row">
+            <div class="col-md-3"> </div>
+            <div class="col-md-6">
+                <table class="table">
+                    <tr>
+                        <th>Titre</th>
+                        <th></th>
+                    </tr>
+                    <tbody>
+                        <tr th:each="a : ${la}">
+                            <td th:text="${a.getTitre()}"></td>
+                            <td><a th:href="@{/Article/{slug}(slug=${a.getSlug()})}"> voir l'article</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

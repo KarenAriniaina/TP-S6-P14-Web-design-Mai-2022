@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html lang="fr">
+    <head>
+        <title>Ajout Article</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" th:href="@{/assets/css/bootstrap.css}">
+        <script th:src="@{assets/ckeditor5-build-classic/ckeditor.js}"></script>
+    </head>
+    <body>
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4" >
+                <h1>Ajout Article</h1>
+                <form method="POST" action="/Article">
+                    <label for="Titre">Titre</label>
+                    <br/>
+                    <input type="text" class="form-control" id="Titre" name="Titre"/>
+                    <br/>
+                    <label for="Resume">Resumé</label>
+                    <br/>
+                    <textarea id="Resume" name="Resume" class="form-control">
+                    </textarea>
+                    <br/>
+                    <label for="categorie" >Categorie</label>
+                    <br/>
+                    <select name="idCategorie" class="form-control" id="categorie">
+                        <option value="">Categorie</option>
+                        <option th:each="cat : ${lc}" th:value="${cat.idCategorie}" th:text="${cat.Designation}"></option>
+                    </select>
+                    <br/>
+                    <label for="contenue">Contenue</label>
+                    <br/>
+                    <textarea id="contenue" name="Contenu">
+                    </textarea>
+                    <br/>
+                    <input type="submit" class="btn btn-primary col-md-12" value="Inserer" />
+                    <br/>
+                    <p th:if="${response!=null}" th:text="${response}"></p>
+                </form>
+            </div>
+        </div>
+        <script>
+            console.log(document.querySelector("#contenue"));
+            ClassicEditor.create(document.querySelector("#contenue"));
+        </script>
+    </body>
+</html>
