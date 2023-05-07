@@ -1,0 +1,11 @@
+/* Set the parent container to a flex container */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* set the minimum height of the container to the full viewport height */
+}
+
+/* Set the footer to align to the bottom of the container */
+footer {
+  margin-top: auto;
+}

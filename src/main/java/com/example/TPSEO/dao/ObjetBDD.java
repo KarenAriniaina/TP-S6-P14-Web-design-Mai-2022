@@ -115,12 +115,12 @@ public class ObjetBDD {
                                         if ((isDouble(value) == true || isInteger(value) == true) && this.getClass().getDeclaredFields()[i].getType().isPrimitive()) {
                                             donnee = donnee + "," + value;
                                         } else {
-                                            String val="";
-                                            for(int j=0;j<value.length();j++){
-                                                if(value.charAt(j)=='\''){
-                                                    val+="'";
+                                            String val = "";
+                                            for (int j = 0; j < value.length(); j++) {
+                                                if (value.charAt(j) == '\'') {
+                                                    val += "'";
                                                 }
-                                                val=val.concat(String.valueOf(value.charAt(j)));
+                                                val = val.concat(String.valueOf(value.charAt(j)));
                                             }
                                             donnee = donnee + ",'" + val + "'";
                                         }
@@ -133,13 +133,13 @@ public class ObjetBDD {
             }
             sql += ")";
             donnee += ")";
-            sql = sql +  "VALUES ('" + NomTable + "_'|| nextval('s_" + NomTable + "')" + donnee;
+            sql = sql + "VALUES ('" + NomTable + "_'|| nextval('s_" + NomTable + "')" + donnee;
             st = c.createStatement();
             System.err.println(sql);
             st.execute(sql);
             c.commit();
         } catch (Exception e) {
-            if(c != null){
+            if (c != null) {
                 c.rollback();
             }
             throw e;
@@ -152,7 +152,7 @@ public class ObjetBDD {
             }
         }
     }
-    
+
     public void Update(Connection c) throws Exception {
         boolean nullve = false;
         Statement st = null;
@@ -166,7 +166,7 @@ public class ObjetBDD {
             String pkval = "";
             sql = sql + "UPDATE " + NomTable + " SET ";
             Class cl = this.getClass();
-            int verif=0;
+            int verif = 0;
             System.out.println(cl.getDeclaredFields().length);
             for (int i = 0; i < cl.getDeclaredFields().length; i++) {
                 String field = cl.getDeclaredFields()[i].getName();
@@ -180,24 +180,26 @@ public class ObjetBDD {
                                 if (normal == true) {
                                     if (field.equalsIgnoreCase(PrimaryKey) == false) {
                                         if (isDouble(value) == true || isInteger(value) == true) {
-                                            if(verif==0){
+                                            if (verif == 0) {
                                                 sql = sql + field + " =" + value;
                                                 verif++;
+                                            } else {
+                                                sql = sql + "," + field + " =" + value;
                                             }
-                                            else sql = sql + ","+field + " =" + value;
                                         } else {
-                                            String val="";
-                                            for(int j=0;j<value.length();j++){
-                                                if(value.charAt(j)=='\''){
-                                                    val+="'";
+                                            String val = "";
+                                            for (int j = 0; j < value.length(); j++) {
+                                                if (value.charAt(j) == '\'') {
+                                                    val += "'";
                                                 }
-                                                val=val.concat(String.valueOf(value.charAt(j)));
+                                                val = val.concat(String.valueOf(value.charAt(j)));
                                             }
-                                            if(verif==0){
-                                                sql = sql +field + " = '" + val + "'"; 
+                                            if (verif == 0) {
+                                                sql = sql + field + " = '" + val + "'";
                                                 verif++;
+                                            } else {
+                                                sql = sql + "," + field + " = '" + val + "'";
                                             }
-                                            else sql = sql + ","+field + " = '" + val+ "'";
                                         }
                                     } else {
                                         pkval = value;
@@ -214,7 +216,9 @@ public class ObjetBDD {
             st.execute(sql);
             c.commit();
         } catch (Exception e) {
-            if(c!= null) c.rollback();
+            if (c != null) {
+                c.rollback();
+            }
             throw e;
         } finally {
             if (st != null) {
@@ -255,12 +259,12 @@ public class ObjetBDD {
                                         if ((isDouble(value) == true || isInteger(value) == true) && this.getClass().getDeclaredFields()[i].getType().isPrimitive()) {
                                             sql = sql + " AND " + field + " = " + value;
                                         } else {
-                                            String vall="";
-                                            for(int j=0;j<value.length();j++){
-                                                if(value.charAt(j)=='\''){
-                                                    vall+="'";
+                                            String vall = "";
+                                            for (int j = 0; j < value.length(); j++) {
+                                                if (value.charAt(j) == '\'') {
+                                                    vall += "'";
                                                 }
-                                                vall=vall.concat(String.valueOf(value.charAt(j)));
+                                                vall = vall.concat(String.valueOf(value.charAt(j)));
                                             }
                                             sql = sql + " AND " + field + " = '" + vall + "'";
                                         }
@@ -346,7 +350,7 @@ public class ObjetBDD {
     }
 
     //prendre current sequence
-     public int currentSequence(Connection c) throws Exception {
+    public int currentSequence(Connection c) throws Exception {
         boolean nullve = false;
         int val = 0;
         String sql = "SELECT currval('s_" + NomTable + "') as curr";
@@ -380,8 +384,7 @@ public class ObjetBDD {
     }
 
     // select mandray requetes 
-
-    public ObjetBDD[] Find(Connection c ,String sql) throws Exception {
+    public ObjetBDD[] Find(Connection c, String sql) throws Exception {
         boolean nullve = false;
         ObjetBDD[] val = new ObjetBDD[0];
         Statement st = null;
@@ -393,10 +396,10 @@ public class ObjetBDD {
                 nullve = true;
             }
             ObjetBDD[] valiny = new ObjetBDD[100];
-            
+
             st = c.createStatement();
             sett = st.executeQuery(sql);
-            
+
             set = st.executeQuery(sql);
             int v = 0;
             int vale = 0;
@@ -447,5 +450,79 @@ public class ObjetBDD {
         return val;
     }
 
-    
+    public void Delete(Connection c) throws Exception {
+        boolean nullve = false;
+        Statement st = null;
+        try {
+            if (c == null) {
+                c = new Connexion().getConnection();
+                nullve = true;
+            }
+            c.setAutoCommit(false);
+            String sql = "";
+            String donnee = "";
+            Class cl = this.getClass();
+            sql = sql + "DELETE FROM " + NomTable + " WHERE " + this.getPrimaryKey() + "='";
+            String value = "";
+            Method m1 = this.getClass().getMethod("get" + this.getPrimaryKey().substring(0, 1).toUpperCase() + this.getPrimaryKey().substring(1), null);
+            value = (String) m1.invoke(this, null);
+            sql += value + "'";
+            st = c.createStatement();
+            System.err.println(sql);
+            st.execute(sql);
+            c.commit();
+        } catch (Exception e) {
+            if (c != null) {
+                c.rollback();
+            }
+            throw e;
+        } finally {
+            if (st != null) {
+                st.close();
+            }
+            if (nullve && c != null) {
+                c.close();
+            }
+        }
+    }
+
+    public void DeleteAll(Connection c) throws Exception {
+        boolean nullve = false;
+        Statement st = null;
+        try {
+            if (c == null) {
+                c = new Connexion().getConnection();
+                nullve = true;
+            }
+            c.setAutoCommit(false);
+            String sql = "";
+            String donnee = "";
+            Class cl = this.getClass();
+            sql = sql + "DELETE FROM " + NomTable;
+//                    + " WHERE " + this.getPrimaryKey() + "='";
+            String value = "";
+            Method m1 = this.getClass().getMethod("get" + this.getPrimaryKey().substring(0, 1).toUpperCase() + this.getPrimaryKey().substring(1), null);
+            value = (String) m1.invoke(this, null);
+            if (value != null) {
+                sql += " WHERE " + this.getPrimaryKey() + "='"+ value + "'";
+            }
+            st = c.createStatement();
+            System.err.println(sql);
+            st.execute(sql);
+            c.commit();
+        } catch (Exception e) {
+            if (c != null) {
+                c.rollback();
+            }
+            throw e;
+        } finally {
+            if (st != null) {
+                st.close();
+            }
+            if (nullve && c != null) {
+                c.close();
+            }
+        }
+    }
+
 }
