@@ -102,7 +102,7 @@ public class Article extends ObjetBDD {
             Path targetLocation = uploadPath.resolve(newFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            this.setImage(name);
+            this.setImage(newFileName);
 //            Path uploadPath = Paths.get("src/main/resources/static/photos/");
 //            uploadPath = Paths.get("src/main/resources/static/photos/" + name);
 //            Files.copy(file.getInputStream(), uploadPath, StandardCopyOption.REPLACE_EXISTING);
