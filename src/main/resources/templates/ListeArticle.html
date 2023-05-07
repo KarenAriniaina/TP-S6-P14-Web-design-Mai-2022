@@ -39,13 +39,13 @@
                                 <div class="col-xl-10 col-lg-10 col-md-12 header-flex">
                                     <!-- sticky -->
                                     <div class="sticky-logo">
-                                        <a href="/Articles"><img src="assets/img/logo/logo.png" alt=""></a>
+                                        <a href="/"><img src="assets/img/logo/logo.png" alt=""></a>
                                     </div>
                                     <!-- Main-menu -->
                                     <div class="main-menu d-none d-md-block">
                                         <nav>
                                             <ul id="navigation">
-                                                <li><a href="/Articles">Home</a></li>
+                                                <li><a href="/">Home</a></li>
                                                 <li th:each="cu : ${lcu}"><a
                                                         th:href="${'/Categorie/'+cu.getSlug(1)}"
                                                         th:text="${cu.getDesignationCategorie()}"></a></li>
@@ -56,7 +56,7 @@
                                                         <li><a href="ListCategorieUne">Catégories à la une</a></li>
                                                     </ul>
                                                 </li>
-                                                <li th:if="${isAuteur!=null && isAuteur==1}"><a href="/">Ajout Article</a></li>
+                                                <li th:if="${isAuteur!=null && isAuteur==1}"><a href="/AjoutArticle">Ajout Article</a></li>
                                                 <li th:if="${isAuteur!=null && isAuteur==1}"><a href="/deconnexionBO">Deconnexion</a></li>
                                             </ul>
                                         </nav>
@@ -141,7 +141,7 @@
                         <div class="col-lg-4">
                             <div class="blog_right_sidebar">
                                 <aside class="single_sidebar_widget search_widget">
-                                    <form method="GET" action="/Articles">
+                                    <form method="GET" action="/">
                                         <h4>Filtre</h4>
                                         <div class="input-group mb-3">
                                             <input type="text" class="form-control" placeholder='Titre' name='Titre'
@@ -181,18 +181,18 @@
                                 <nav aria-label="Page navigation example">
                                     <ul class="pagination justify-content-start">
                                         <li th:if="${nbrpage!=1 && page!=1}" class="page-item"><a class="page-link"
-                                                                                                  th:href="${'/Articles?'+link+'&page='+(page-1)}"><span class="flaticon-arrow roted"></span></a></li>
+                                                                                                  th:href="${'/?'+link+'&page='+(page-1)}"><span class="flaticon-arrow roted"></span></a></li>
                                         <li th:each="i : ${#numbers.sequence(1, nbrpage)}">
                                             <span th:if="${i==page}" class="page-item active">
                                                 <a class="page-link" href="#" th:text="${i}"></a>
                                             </span>
                                             <span th:if="${i!=page}" class="page-item">
-                                                <a class="page-link" th:href="${'/Articles?'+link+'&page='+i}"
+                                                <a class="page-link" th:href="${'/?'+link+'&page='+i}"
                                                    th:text="${i}"></a>
                                             </span>
                                         </li>
                                         <li th:if="${nbrpage!=1 && page!=nbrpage}" class="page-item"><a class="page-link"
-                                                                                                        th:href="${'/Articles?'+link+'&page='+(page+1)}"><span class="flaticon-arrow right-arrow"></span></a></li>
+                                                                                                        th:href="${'/?'+link+'&page='+(page+1)}"><span class="flaticon-arrow right-arrow"></span></a></li>
                                     </ul>
                                 </nav>
                             </div>

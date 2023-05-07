@@ -411,6 +411,7 @@ public class ObjetBDD {
                     if (verif_col(set, field.toLowerCase()) == true) {
                         Method m = cl.getDeclaredMethod("set" + field.substring(0, 1).toUpperCase() + field.substring(1), cl.getDeclaredFields()[i].getType());
                         field = field.toLowerCase();
+                        System.err.println(field);
                         m.invoke(valiny[v], set.getObject(field));
                     }
                 }

@@ -9,6 +9,10 @@ import com.example.TPSEO.outil.Slug;
 import com.example.TPSEO.dao.Connexion;
 import com.example.TPSEO.dao.ObjetBDD;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -67,9 +71,8 @@ public class Article extends ObjetBDD {
     public void CreerPhoto(MultipartFile file) throws Exception {
         String name = "";
         try {
-            File dir = new File(System.getProperty("user.dir") + "/src/main/resources/static/photos");
-            if (!dir.exists()) {
-                dir.mkdirs();
+            if (file.isEmpty()) {
+                throw new Exception("Photos is empty");
             }
             if (file != null && !file.getOriginalFilename().equalsIgnoreCase("")) {
                 name = file.getOriginalFilename();
@@ -79,18 +82,20 @@ public class Article extends ObjetBDD {
                         && !name.endsWith(".gif") && !name.endsWith(".GIF")
                         && !name.endsWith(".BMP") && !name.endsWith(".bmp")
                         && !name.endsWith(".tiff") && !name.endsWith(".TIFF")
+                        && !name.endsWith(".WEBP") && !name.endsWith(".webp")
                         && !name.endsWith(".SVG") && !name.endsWith(".svg")) {
                     throw new Exception("Veuillez saisir une image");
                 }
-                System.err.println("ato izy");
             }
-            System.err.println("ato ndray izy");
             this.setImage(name);
-            File dest = new File(dir, name);
-            if (!file.getOriginalFilename().equalsIgnoreCase("")) {
-                file.transferTo(dest);
+            Path uploadPath = Paths.get("src/main/resources/static/photos/");
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
             }
+            uploadPath=Paths.get("src/main/resources/static/photos/"+name);
+            Files.copy(file.getInputStream(), uploadPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
+            e.printStackTrace();
             throw e;
         }
     }
@@ -107,7 +112,7 @@ public class Article extends ObjetBDD {
     }
 
     public void setDatePublication(String Date) throws Exception {
-        Timestamp t =Timestamp.valueOf(LocalDateTime.now());
+        Timestamp t = Timestamp.valueOf(LocalDateTime.now());
         if (Date.equalsIgnoreCase("")) {
             throw new Exception("Date vide");
         }
@@ -311,10 +316,11 @@ public class Article extends ObjetBDD {
             st = con.createStatement();
             sett = st.executeQuery(sql);
             if (sett.next()) {
-                valiny = sett.getInt("nbr");
+                int nbr=sett.getInt("nbr");
+                valiny = nbr ;
                 System.err.println(valiny);
                 valiny /= 6;
-                if (valiny == 0 || (valiny % 6) != 0) {
+                if (valiny == 0 || (nbr % 6) != 0) {
                     valiny++;
                 }
             }
@@ -342,6 +348,7 @@ public class Article extends ObjetBDD {
 //            int nbrPage=this.NbrPageRecord(con, t1, t2);
             int numpage = (6 * page) - 6;
             String sql = "SELECT * FROM v_Article WHERE 1=1 " + this.getSQLPagination(t1, t2) + " ORDER BY isUne DESC LIMIT 6 OFFSET " + numpage;
+            System.err.println(sql);
             ObjetBDD[] lo = this.Find(con, sql);
             la = new Article[lo.length];
             if (lo.length != 0) {
