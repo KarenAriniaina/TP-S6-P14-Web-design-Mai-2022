@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class ArticleController {
 
-    @GetMapping("/")
+    @GetMapping("/AjoutArticle")
     public String GoToInsertionArticle(HttpSession session, HttpServletRequest request, Model model) throws Exception {
         if (session.getAttribute("idAdmin") == null && session.getAttribute("idAuteur") == null) {
             return "redirect:/connexionBO";
@@ -40,6 +40,9 @@ public class ArticleController {
         if (session.getAttribute("idAdmin") != null || session.getAttribute("idAuteur") != null) {
             model.addAttribute("isAuteur", 1);
         }
+        if(request.getParameter("response")!=null){
+            model.addAttribute("response", request.getParameter("response"));
+        }
         model.addAttribute("isAdmin", isAdmin);
         return "InsertionArticle";
     }
@@ -50,7 +53,7 @@ public class ArticleController {
 //        model.addAttribute("la", la);
 //        return "ListeArticle";
 //    }
-    @GetMapping("/Articles")
+    @GetMapping("/")
     public String ListeArticles(@RequestParam(name = "Titre", required = false, defaultValue = "") String Titre,
             @RequestParam(name = "t1", required = false, defaultValue = "") String t1,
             @RequestParam(name = "t2", required = false, defaultValue = "") String t2,
@@ -120,10 +123,10 @@ public class ArticleController {
         } catch (Exception e) {
             response = e.getMessage();
         }
-        model.addAttribute("response", response);
+       // model.addAttribute("response", response);
         Categorie[] lc = new Categorie().ListeCategorie();
         model.addAttribute("lc", lc);
-        return "InsertionArticle";
+        return "redirect:/?response="+response;
     }
 
     @GetMapping("/Article/{slug}")

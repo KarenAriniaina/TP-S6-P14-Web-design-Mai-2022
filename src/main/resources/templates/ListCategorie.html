@@ -49,13 +49,13 @@
                                 <div class="col-xl-10 col-lg-10 col-md-12 header-flex">
                                     <!-- sticky -->
                                     <div class="sticky-logo">
-                                        <a href="/Articles"><img src="assets/img/logo/logo.png" alt=""></a>
+                                        <a href="/"><img src="assets/img/logo/logo.png" alt=""></a>
                                     </div>
                                     <!-- Main-menu -->
                                     <div class="main-menu d-none d-md-block">
                                         <nav>
                                             <ul id="navigation">
-                                                <li><a href="/Articles">Home</a></li>
+                                                <li><a href="/">Home</a></li>
                                                 <li th:each="cu : ${lcu}"><a
                                                         th:href="${'/Categorie/'+cu.getSlug(1)}"
                                                         th:text="${cu.getDesignationCategorie()}"></a></li>
@@ -66,7 +66,7 @@
                                                         <li><a href="ListCategorieUne">Catégories à la une</a></li>
                                                     </ul>
                                                 </li>
-                                                <li><a href="/">Ajout Article</a></li>
+                                                <li><a href="/AjoutArticle">Ajout Article</a></li>
                                                 <li><a href="/deconnexionBO">Deconnexion</a></li>
                                             </ul>
                                         </nav>
