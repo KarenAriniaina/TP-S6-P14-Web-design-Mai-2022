@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!doctype html>
+<html class="no-js" lang="zxx">
+
+    <head>
+        <meta charset="utf-8">
+        <base href="/" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Ajout Auteur</title>
+        <meta name="description" content="Ajout Auteur">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- <link rel="manifest" href="site.webmanifest"> -->
+        <link rel="shortcut icon" type="image/x-icon" th:href="@{${'assets/img/favicon.png'}+${'/'}}">
+        <!-- Place favicon.ico in the root directory -->
+
+
+        <!-- CSS here -->
+        <link rel="stylesheet" th:href="@{${'assets/css/bootstrap.min.css'}+${'/'}}">
+        <link rel="stylesheet" th:href="@{${'assets/css/Foot.css'}+${'/'}}">
+        <link rel="stylesheet" th:href="@{${'assets/css/owl.carousel.min.css'}+${'/'}}">
+        <link rel="stylesheet" th:href="@{${'assets/css/slicknav.css'}+${'/'}}">
+        <link rel="stylesheet" th:href="@{${'assets/css/animate.min.css'}+${'/'}}">
+        <link rel="stylesheet" th:href="@{${'assets/css/magnific-popup.css'}+${'/'}}">
+        <link rel="stylesheet" th:href="@{${'assets/css/fontawesome-all.min.css'}+${'/'}}">
+        <link rel="stylesheet" th:href="@{${'assets/css/themify-icons.css'}+${'/'}}">
+        <link rel="stylesheet" th:href="@{${'assets/css/slick.css'}+${'/'}}">
+        <link rel="stylesheet" th:href="@{${'assets/css/nice-select.css'}+${'/'}}">
+        <link rel="stylesheet" th:href="@{${'assets/css/style.css'}+${'/'}}">
+        <link rel="stylesheet" th:href="@{${'assets/css/responsive.css'}+${'/'}}">
+        <script th:src="@{assets/ckeditor5-build-classic/ckeditor.js}"></script>
+    </head>
+    <body>
+
+        <header>
+            <!-- Header Start -->
+            <div class="header-area">
+                <div class="main-header ">
+                    <div class="header-bottom header-sticky">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-xl-10 col-lg-10 col-md-12 header-flex">
+                                    <!-- sticky -->
+                                    <div class="sticky-logo">
+                                        <a href="/Articles"><img src="assets/img/logo/logo.png" alt=""></a>
+                                    </div>
+                                    <!-- Main-menu -->
+                                    <div class="main-menu d-none d-md-block">
+                                        <nav>
+                                            <ul id="navigation">
+                                                <li><a href="/Articles">Home</a></li>
+                                                <li th:each="cu : ${lcu}"><a
+                                                        th:href="${'/Categorie/'+cu.getSlug(1)}"
+                                                        th:text="${cu.getDesignationCategorie()}"></a></li>
+                                                <li><a href="#">Pages</a>
+                                                    <ul class="submenu">
+                                                        <li><a href="/createAuteur">Ajout Auteur</a></li>
+                                                        <li><a href="/ListCategorie">Catégories details</a></li>
+                                                        <li><a href="ListCategorieUne">Catégories à la une</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li><a href="/">Ajout Article</a></li>
+                                                <li><a href="/deconnexionBO">Deconnexion</a></li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                                <!-- Mobile Menu -->
+                                <div class="col-12">
+                                    <div class="mobile_menu d-block d-md-none"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Header End -->
+        </header>
+
+        <section class="contact-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="contact-title"> Ajout Auteur</h1>
+                    </div>
+                    <div class="col-lg-8">
+                        <div th:if="${response!=null && response!=''}" th:text="${response}" class="alert alert-danger" role="alert"></div>
+                        <form action="/creerAuteur" method="POST">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="Titre" name="Nom" placeholder="Nom"/>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="Prenom" placeholder="Prenom"/>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="Login" placeholder="Login"/>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" name="Mdp" placeholder="Mot de passe"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <button type="submit" class="button button-contactForm boxed-btn">Ajouter</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer>
+            <!-- footer-bottom aera -->
+            <div class="footer-bottom-area">
+                <div class="container">
+                    <div class="footer-border">
+                        <div class="row d-flex align-items-center justify-content-between">
+                            <div class="col-12">
+                                <div class="footer-copy-right">
+                                    <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                        Copyright &copy;
+                                        <script>document.write(new Date().getFullYear());</script> All rights reserved |<a
+                                            href="#" target="_blank">RAKOTOMALALA Ariniaina Karen - ETU001445</a>
+                                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer End-->
+        </footer>
+
+        <!-- JS here -->
+
+        <!-- All JS Custom Plugins Link Here here -->
+        <script src="./assets/js/vendor/modernizr-3.5.0.min.js"></script>
+        <!-- Jquery, Popper, Bootstrap -->
+        <script src="./assets/js/vendor/jquery-1.12.4.min.js"></script>
+        <script src="./assets/js/popper.min.js"></script>
+        <script src="./assets/js/bootstrap.min.js"></script>
+        <!-- Jquery Mobile Menu -->
+        <script src="./assets/js/jquery.slicknav.min.js"></script>
+
+        <!-- Jquery Slick , Owl-Carousel Plugins -->
+        <script src="./assets/js/owl.carousel.min.js"></script>
+        <script src="./assets/js/slick.min.js"></script>
+
+        <!-- One Page, Animated-HeadLin -->
+        <script src="./assets/js/wow.min.js"></script>
+        <script src="./assets/js/animated.headline.js"></script>
+        <script src="./assets/js/jquery.magnific-popup.js"></script>
+
+        <!-- Scrollup, nice-select, sticky -->
+        <script src="./assets/js/jquery.scrollUp.min.js"></script>
+        <script src="./assets/js/jquery.nice-select.min.js"></script>
+        <script src="./assets/js/jquery.sticky.js"></script>
+
+        <!-- contact js -->
+        <script src="./assets/js/contact.js"></script>
+        <script src="./assets/js/jquery.form.js"></script>
+        <script src="./assets/js/jquery.validate.min.js"></script>
+        <script src="./assets/js/mail-script.js"></script>
+        <script src="./assets/js/jquery.ajaxchimp.min.js"></script>
+
+        <!-- Jquery Plugins, main Jquery -->	
+        <script src="./assets/js/plugins.js"></script>
+        <script src="./assets/js/main.js"></script>
+    </body>
+</html>

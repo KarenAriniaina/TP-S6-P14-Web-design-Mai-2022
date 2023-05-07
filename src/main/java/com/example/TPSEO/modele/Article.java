@@ -5,9 +5,17 @@
  */
 package com.example.TPSEO.modele;
 
+import com.example.TPSEO.outil.Slug;
 import com.example.TPSEO.dao.Connexion;
 import com.example.TPSEO.dao.ObjetBDD;
+import java.io.File;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -21,6 +29,97 @@ public class Article extends ObjetBDD {
     private String Resume;
     private String Contenu;
     private String Titre;
+    private Timestamp DatePublication;
+    private String Image;
+    private String idAuteur;
+    private int isUne;
+
+    public int getIsUne() {
+        return isUne;
+    }
+
+    public void setIsUne(int isUne) {
+        this.isUne = isUne;
+    }
+
+    public String getIdAuteur() {
+        return idAuteur;
+    }
+
+    public void setIdAuteur(String idAuteur) throws Exception {
+        if (idAuteur == null || idAuteur.equalsIgnoreCase("")) {
+            throw new Exception("Auteur non connu");
+        }
+        this.idAuteur = idAuteur;
+    }
+
+    public String getImage() {
+        return Image;
+    }
+
+    public void setImage(String Image) throws Exception {
+        if (Image == null || Image.equalsIgnoreCase("")) {
+            throw new Exception("Image vide");
+        }
+        this.Image = Image;
+    }
+
+    public void CreerPhoto(MultipartFile file) throws Exception {
+        String name = "";
+        try {
+            File dir = new File(System.getProperty("user.dir") + "/src/main/resources/static/photos");
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            if (file != null && !file.getOriginalFilename().equalsIgnoreCase("")) {
+                name = file.getOriginalFilename();
+                if (!name.endsWith(".jpeg") && !name.endsWith(".JPEG")
+                        && !name.endsWith(".jpg") && !name.endsWith(".JPG")
+                        && !name.endsWith(".png") && !name.endsWith(".PNG")
+                        && !name.endsWith(".gif") && !name.endsWith(".GIF")
+                        && !name.endsWith(".BMP") && !name.endsWith(".bmp")
+                        && !name.endsWith(".tiff") && !name.endsWith(".TIFF")
+                        && !name.endsWith(".SVG") && !name.endsWith(".svg")) {
+                    throw new Exception("Veuillez saisir une image");
+                }
+                System.err.println("ato izy");
+            }
+            System.err.println("ato ndray izy");
+            this.setImage(name);
+            File dest = new File(dir, name);
+            if (!file.getOriginalFilename().equalsIgnoreCase("")) {
+                file.transferTo(dest);
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public Timestamp getDatePublication() {
+        return DatePublication;
+    }
+
+    public void setDatePublication(Timestamp DatePublication) throws Exception {
+        if (DatePublication.after(Timestamp.valueOf(LocalDateTime.now()))) {
+            throw new Exception("Date superieur a current date");
+        }
+        this.DatePublication = DatePublication;
+    }
+
+    public void setDatePublication(String Date) throws Exception {
+        Timestamp t =Timestamp.valueOf(LocalDateTime.now());
+        if (Date.equalsIgnoreCase("")) {
+            throw new Exception("Date vide");
+        }
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(Date);
+            long timestamp = dateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
+            t = new Timestamp(timestamp);
+        } catch (Exception e) {
+            throw new Exception("Format date incorrect");
+        }
+        this.setDatePublication(t);
+    }
 
     public String getDesignationCategorie() {
         return DesignationCategorie;
@@ -110,15 +209,19 @@ public class Article extends ObjetBDD {
         return valiny;
     }
 
-    public void CreateArticle() throws Exception {
+    public void CreateArticle(String idAuteur, String Titre, String idCategorie, String Resume, String Contenu, String DatePub, MultipartFile img) throws Exception {
         Connection c = null;
         try {
             c = Connexion.getConnection();
+            this.setIdAuteur(idAuteur);
+            this.setContenu(Contenu);
+            this.setTitre(Titre);
+            this.setIdCategorie(idCategorie);
+            this.setResume(Resume);
+            this.setDatePublication(DatePub);
+            this.CreerPhoto(img);
             this.Create(c);
         } catch (Exception e) {
-            if (c != null) {
-                c.rollback();
-            }
             throw e;
         } finally {
             if (c != null) {
@@ -146,6 +249,10 @@ public class Article extends ObjetBDD {
                 this.setResume(a.getResume());
                 this.setTitre(a.getTitre());
                 this.setDesignationCategorie(a.getDesignationCategorie());
+                this.setDatePublication(a.getDatePublication());
+                this.setImage(a.getImage());
+                this.setIdAuteur(a.getIdAuteur());
+                this.setIsUne(a.getIsUne());
             } else {
                 throw new Exception("Aucun article trouvé");
             }
@@ -156,6 +263,173 @@ public class Article extends ObjetBDD {
                 c.close();
             }
             this.setNomTable("Article");
+        }
+    }
+
+    public String getSQLPagination(String t1, String t2) throws Exception {
+        String sql = "";
+        if (t1 != null && !t1.equalsIgnoreCase("")) {
+            try {
+                this.setDatePublication(t1);
+            } catch (Exception e) {
+                throw new Exception("Format date debut invalide");
+            }
+            sql += " AND DatePublication >='" + t1 + "'";
+        }
+        if (t2 != null && !t2.equalsIgnoreCase("")) {
+            try {
+                this.setDatePublication(t2);
+            } catch (Exception e) {
+                throw new Exception("Format date fin invalide");
+            }
+            sql += " AND DatePublication <='" + t2 + "'";
+        }
+        if (Titre != null && !Titre.equalsIgnoreCase("")) {
+            sql += " AND LOWER(Titre) like LOWER('%" + Titre + "%') ";
+        }
+        if (idAuteur != null && !idAuteur.equalsIgnoreCase("")) {
+            sql += " AND idAuteur='" + idAuteur + "'";
+        }
+        if (idCategorie != null && !idCategorie.equalsIgnoreCase("")) {
+            sql += " AND idCategorie='" + idCategorie + "'";
+        }
+        return sql;
+    }
+
+    public int NbrPageRecord(Connection con, String t1, String t2) throws Exception {
+        int valiny = 0;
+        boolean nullve = false;
+        Statement st = null;
+        ResultSet sett = null;
+        try {
+            if (con == null) {
+                con = Connexion.getConnection();
+                nullve = true;
+            }
+            String sql = "SELECT COUNT (*)::Integer as nbr FROM v_Article WHERE 1=1 " + this.getSQLPagination(t1, t2);
+            System.err.println(sql);
+            st = con.createStatement();
+            sett = st.executeQuery(sql);
+            if (sett.next()) {
+                valiny = sett.getInt("nbr");
+                System.err.println(valiny);
+                valiny /= 6;
+                if (valiny == 0 || (valiny % 6) != 0) {
+                    valiny++;
+                }
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (sett != null) {
+                sett.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+            if (nullve == true) {
+                con.close();
+            }
+        }
+        return valiny;
+    }
+
+    public Article[] ListeArticlePaginer(String t1, String t2, int page) throws Exception {
+        Article[] la = new Article[0];
+        Connection con = null;
+        try {
+            con = Connexion.getConnection();
+//            int nbrPage=this.NbrPageRecord(con, t1, t2);
+            int numpage = (6 * page) - 6;
+            String sql = "SELECT * FROM v_Article WHERE 1=1 " + this.getSQLPagination(t1, t2) + " ORDER BY isUne DESC LIMIT 6 OFFSET " + numpage;
+            ObjetBDD[] lo = this.Find(con, sql);
+            la = new Article[lo.length];
+            if (lo.length != 0) {
+                System.arraycopy(lo, 0, la, 0, lo.length);
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (con != null) {
+                con.close();
+            }
+        }
+        return la;
+    }
+
+    public Article[] DernierArticle3() throws Exception {
+        Article[] la = new Article[0];
+        Connection con = null;
+        try {
+            con = Connexion.getConnection();
+            String sql = "SELECT * FROM v_Article ORDER BY DatePublication DESC LIMIT 3";
+            ObjetBDD[] lo = this.Find(con, sql);
+            la = new Article[lo.length];
+            if (lo.length != 0) {
+                System.arraycopy(lo, 0, la, 0, lo.length);
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (con != null) {
+                con.close();
+            }
+        }
+        return la;
+    }
+
+    public String LinkArticle(String t1, String t2) {
+        String link = "";
+        int nbr = 0;
+        if (t1 != null && !t1.equalsIgnoreCase("")) {
+            link += "t1=" + t1;
+            nbr++;
+        }
+        if (t2 != null && !t2.equalsIgnoreCase("")) {
+            if (nbr > 0) {
+                link += "&";
+            }
+            link += "t2=" + t2;
+        }
+        if (Titre != null && !Titre.equalsIgnoreCase("")) {
+            if (nbr > 0) {
+                link += "&";
+            }
+            link += "Titre=" + Titre;
+        }
+        if (idCategorie != null && !idCategorie.equalsIgnoreCase("")) {
+            if (nbr > 0) {
+                link += "&";
+            }
+            link += "idCategorie=" + idCategorie;
+        }
+        return link;
+    }
+
+    public void UpdateArticle(String idArticle, boolean aUne, String Titre, String idCategorie, String Resume, String Contenu, String DatePub, MultipartFile img) throws Exception {
+        Connection c = null;
+        try {
+            c = Connexion.getConnection();
+            this.setIdArticle(idArticle);
+            this.setContenu(Contenu);
+            this.setTitre(Titre);
+            this.setIdCategorie(idCategorie);
+            this.setResume(Resume);
+            if (img != null && !img.getOriginalFilename().equalsIgnoreCase("")) {
+                this.CreerPhoto(img);
+            }
+            this.setDatePublication(DatePub);
+            this.Update(c);
+            if (aUne == true) {
+                ArticleUne au = new ArticleUne();
+                au.setArticleUne(c, idArticle);
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (c != null) {
+                c.close();
+            }
         }
     }
 }
