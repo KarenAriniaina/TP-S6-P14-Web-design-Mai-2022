@@ -42,6 +42,7 @@ CREATE TABLE Utilisateur (
   Prenom        varchar(100) NOT NULL, 
   Login         varchar(100) NOT NULL UNIQUE, 
   Mdp           varchar(100) NOT NULL, 
+  Type          int4 NOT NULL,
   PRIMARY KEY (idUtilisateur)
 );
 
@@ -78,6 +79,14 @@ INSERT INTO Categorie VALUES ('Categorie_'||nextval('s_Categorie'),'IA trends');
 
 CREATE OR REPLACE VIEW v_CategorieUne AS
   SELECT CU.*,Ca.Designation AS DesignationCategorie FROM CategorieUne CU JOIN Categorie Ca ON (Cu.idCategorie=Ca.idCategorie);
+  
+CREATE TABLE ArticleUne (
+  idArticleUne varchar(50) NOT NULL, 
+  idArticle    varchar(50) NOT NULL, 
+  PRIMARY KEY (idArticleUne)
+);
+
+CREATE SEQUENCE s_ArticleUne INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1;
 
 CREATE OR REPLACE VIEW v_Article AS
   SELECT A.*,C.Designation as DesignationCategorie,
@@ -90,12 +99,5 @@ CREATE OR REPLACE VIEW v_Article AS
 
 -- SELECT * FROM v_Article WHERE idCategorie='' AND Titre like '%r%' AND DatePublication<= '' AND DatePublication>='' AND idAuteur='' ORDER BY DatePublication DESC;
 
-CREATE TABLE ArticleUne (
-  idArticleUne varchar(50) NOT NULL, 
-  idArticle    varchar(50) NOT NULL, 
-  PRIMARY KEY (idArticleUne)
-);
-
-CREATE SEQUENCE s_ArticleUne INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1
 
 INSERT INTO ArticleUne VALUES ('ArticleUne_'||nextval('s_ArticleUne'),'Article_2');
