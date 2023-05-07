@@ -126,7 +126,7 @@ public class ArticleController {
        // model.addAttribute("response", response);
         Categorie[] lc = new Categorie().ListeCategorie();
         model.addAttribute("lc", lc);
-        return "redirect:/?response="+response;
+        return "redirect:/AjoutArticle?response="+response;
     }
 
     @GetMapping("/Article/{slug}")

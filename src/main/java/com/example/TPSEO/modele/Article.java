@@ -19,7 +19,10 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.UUID;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 /**
  *
@@ -87,13 +90,22 @@ public class Article extends ObjetBDD {
                     throw new Exception("Veuillez saisir une image");
                 }
             }
-            this.setImage(name);
-            Path uploadPath = Paths.get("src/main/resources/static/photos/");
+            
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            Path uploadPath = Paths.get("src/main/resources/static/photos/").toAbsolutePath().normalize();
+            // Normalize the file name
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
-            uploadPath=Paths.get("src/main/resources/static/photos/"+name);
-            Files.copy(file.getInputStream(), uploadPath, StandardCopyOption.REPLACE_EXISTING);
+            String newFileName = UUID.randomUUID().toString() + "." + StringUtils.getFilenameExtension(fileName);
+            // Copy file to the target location (replace existing file with the same name)
+            Path targetLocation = uploadPath.resolve(newFileName);
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            this.setImage(newFileName);
+//            Path uploadPath = Paths.get("src/main/resources/static/photos/");
+//            uploadPath = Paths.get("src/main/resources/static/photos/" + name);
+//            Files.copy(file.getInputStream(), uploadPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -316,8 +328,8 @@ public class Article extends ObjetBDD {
             st = con.createStatement();
             sett = st.executeQuery(sql);
             if (sett.next()) {
-                int nbr=sett.getInt("nbr");
-                valiny = nbr ;
+                int nbr = sett.getInt("nbr");
+                valiny = nbr;
                 System.err.println(valiny);
                 valiny /= 6;
                 if (valiny == 0 || (nbr % 6) != 0) {
