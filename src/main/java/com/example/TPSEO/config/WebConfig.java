@@ -28,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/assets/**")
                 .addResourceLocations("classpath:/static/assets/")
-                .setCacheControl(CacheControl.maxAge(120, TimeUnit.SECONDS));
+                .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS));
     }
 
 //    @Bean
