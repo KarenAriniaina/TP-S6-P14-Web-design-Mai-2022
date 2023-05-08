@@ -28,8 +28,8 @@ public class TpseoApplication {
     @Bean
     public FilterRegistrationBean<GzipFilter> gzipFilter() {
         FilterRegistrationBean<GzipFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new GzipFilter());
-        registrationBean.addUrlPatterns("/*");
+//        registrationBean.setFilter(new GzipFilter());
+//        registrationBean.addUrlPatterns("/*");
         return registrationBean;
     }
 
