@@ -8,6 +8,11 @@ package com.example.TPSEO.modele;
 import com.example.TPSEO.outil.Slug;
 import com.example.TPSEO.dao.Connexion;
 import com.example.TPSEO.dao.ObjetBDD;
+import com.example.TPSEO.outil.DriveServiceImpl;
+import com.google.api.client.http.FileContent;
+import com.google.api.client.http.InputStreamContent;
+import com.google.api.services.drive.Drive;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,6 +24,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Collections;
 import java.util.UUID;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -89,23 +95,20 @@ public class Article extends ObjetBDD {
                         && !name.endsWith(".SVG") && !name.endsWith(".svg")) {
                     throw new Exception("Veuillez saisir une image");
                 }
-            }
-            
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-            Path uploadPath = Paths.get("src/main/resources/static/photos/").toAbsolutePath().normalize();
-            // Normalize the file name
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            String newFileName = UUID.randomUUID().toString() + "." + StringUtils.getFilenameExtension(fileName);
-            // Copy file to the target location (replace existing file with the same name)
-            Path targetLocation = uploadPath.resolve(newFileName);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            this.setImage(newFileName);
-//            Path uploadPath = Paths.get("src/main/resources/static/photos/");
-//            uploadPath = Paths.get("src/main/resources/static/photos/" + name);
-//            Files.copy(file.getInputStream(), uploadPath, StandardCopyOption.REPLACE_EXISTING);
+                // Upload le fichier dans Google Drive
+                DriveServiceImpl imp = new DriveServiceImpl();
+                com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
+                fileMetadata.setName(file.getOriginalFilename());
+                fileMetadata.setParents(Collections.singletonList("1Q4ALRbA3TuyCCg2Fb8mlfOZqFSDcYaMJ"));
+                InputStreamContent mediaContent = new InputStreamContent(file.getContentType(),
+                        new BufferedInputStream(file.getInputStream()));
+                mediaContent.setLength(file.getSize());
+
+                com.google.api.services.drive.model.File uploadedFile = imp.getDriveService().files().create(fileMetadata, mediaContent)
+                        .setFields("id, webContentLink, webViewLink").execute();
+                this.setImage(uploadedFile.getId());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -117,7 +120,7 @@ public class Article extends ObjetBDD {
     }
 
     public void setDatePublication(Timestamp DatePublication) throws Exception {
-        if (DatePublication.after(Timestamp.valueOf(LocalDateTime.now()))) {
+        if (DatePublication.getTime()>Timestamp.valueOf(LocalDateTime.now()).getTime()) {
             throw new Exception("Date superieur a current date");
         }
         this.DatePublication = DatePublication;
@@ -226,7 +229,8 @@ public class Article extends ObjetBDD {
         return valiny;
     }
 
-    public void CreateArticle(String idAuteur, String Titre, String idCategorie, String Resume, String Contenu, String DatePub, MultipartFile img) throws Exception {
+    public void CreateArticle(String idAuteur, String Titre, String idCategorie, String Resume, String Contenu,
+            String DatePub, MultipartFile img) throws Exception {
         Connection c = null;
         try {
             c = Connexion.getConnection();
@@ -357,9 +361,10 @@ public class Article extends ObjetBDD {
         Connection con = null;
         try {
             con = Connexion.getConnection();
-//            int nbrPage=this.NbrPageRecord(con, t1, t2);
+            // int nbrPage=this.NbrPageRecord(con, t1, t2);
             int numpage = (6 * page) - 6;
-            String sql = "SELECT * FROM v_Article WHERE 1=1 " + this.getSQLPagination(t1, t2) + " ORDER BY isUne DESC LIMIT 6 OFFSET " + numpage;
+            String sql = "SELECT * FROM v_Article WHERE 1=1 " + this.getSQLPagination(t1, t2)
+                    + " ORDER BY isUne DESC LIMIT 6 OFFSET " + numpage;
             System.err.println(sql);
             ObjetBDD[] lo = this.Find(con, sql);
             la = new Article[lo.length];
@@ -425,7 +430,8 @@ public class Article extends ObjetBDD {
         return link;
     }
 
-    public void UpdateArticle(String idArticle, boolean aUne, String Titre, String idCategorie, String Resume, String Contenu, String DatePub, MultipartFile img) throws Exception {
+    public void UpdateArticle(String idArticle, boolean aUne, String Titre, String idCategorie, String Resume,
+            String Contenu, String DatePub, MultipartFile img) throws Exception {
         Connection c = null;
         try {
             c = Connexion.getConnection();

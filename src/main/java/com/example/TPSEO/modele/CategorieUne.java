@@ -7,6 +7,8 @@ package com.example.TPSEO.modele;
 
 import com.example.TPSEO.dao.Connexion;
 import com.example.TPSEO.dao.ObjetBDD;
+import com.example.TPSEO.outil.Slug;
+
 import java.sql.Connection;
 
 /**
