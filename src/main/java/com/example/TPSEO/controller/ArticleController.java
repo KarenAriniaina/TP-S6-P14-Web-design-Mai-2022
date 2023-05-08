@@ -5,11 +5,18 @@
  */
 package com.example.TPSEO.controller;
 
+import com.example.TPSEO.config.ImageService;
 import com.example.TPSEO.modele.Article;
 import com.example.TPSEO.modele.Categorie;
 import com.example.TPSEO.modele.CategorieUne;
+import com.example.TPSEO.outil.DriveServiceImpl;
+import com.google.api.services.drive.model.File;
+import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 /**
  *
@@ -24,6 +32,9 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Controller
 public class ArticleController {
+
+    @Autowired
+    private ImageService imageService;
 
     @GetMapping("/AjoutArticle")
     public String GoToInsertionArticle(HttpSession session, HttpServletRequest request, Model model) throws Exception {
@@ -40,7 +51,7 @@ public class ArticleController {
         if (session.getAttribute("idAdmin") != null || session.getAttribute("idAuteur") != null) {
             model.addAttribute("isAuteur", 1);
         }
-        if(request.getParameter("response")!=null){
+        if (request.getParameter("response") != null) {
             model.addAttribute("response", request.getParameter("response"));
         }
         model.addAttribute("isAdmin", isAdmin);
@@ -123,15 +134,15 @@ public class ArticleController {
         } catch (Exception e) {
             response = e.getMessage();
         }
-       // model.addAttribute("response", response);
+        // model.addAttribute("response", response);
         Categorie[] lc = new Categorie().ListeCategorie();
         model.addAttribute("lc", lc);
-        return "redirect:/AjoutArticle?response="+response;
+        return "redirect:/AjoutArticle?response=" + response;
     }
 
     @GetMapping("/Article/{slug}")
     public String getArticle(@PathVariable("slug") String Slug,
-            HttpSession session, HttpServletRequest request, Model model) throws Exception {
+            HttpSession session, HttpServletRequest request,HttpServletResponse resp, Model model) throws Exception {
         Article a = new Article();
         String[] split = Slug.split("-");
         String id = split[split.length - 1];
@@ -142,6 +153,13 @@ public class ArticleController {
         try {
             a.setIdArticle("Article_" + id);
             a.getArticle();
+            File file = new DriveServiceImpl().getDriveService().files().get(a.getImage()).setFields("webViewLink").execute();
+            String imageUrl = file.getWebViewLink();
+            UrlResource imageResource = new UrlResource(imageUrl);
+            ResourceHttpRequestHandler handler = new ResourceHttpRequestHandler();
+            handler.setLocations(Collections.singletonList(imageResource));
+            handler.setCacheSeconds(86400);
+            handler.handleRequest(request, resp);
             model.addAttribute("lcu", new CategorieUne().ListeCategorieUne(null));
         } catch (Exception e) {
             response = e.getMessage();
