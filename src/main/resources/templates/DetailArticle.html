@@ -68,7 +68,7 @@
                     <div class="col-lg-8 posts-list">
                         <div class="single-post">
                             <div class="feature-img">
-                                <img class="img-fluid" th:src="${'photos/'+a.getImage()}" alt="">
+                                <img class="img-fluid" th:src="${'https://drive.google.com/uc?id='+a.getImage()}" alt="">
                             </div>
                             <div class="blog_details">
                                 <h1 th:text="${a.getTitre()}"></h1>
@@ -92,7 +92,7 @@
                                     <h3 class="widget_title">Recent Post</h3>
                                     <div th:each="ar: ${lda}" class="trand-right-single d-flex">
                                         <div class="trand-right-img">
-                                            <img th:src="${'photos/'+ar.getImage()}" alt="post" width="50" height="50">
+                                            <img th:src="${'https://drive.google.com/uc?id='+ar.getImage()}" alt="post" width="50" height="50">
                                         </div>
                                         <div class="trand-right-cap">
                                             <span class="color1" th:text=${ar.getDesignationCategorie()}></span>
