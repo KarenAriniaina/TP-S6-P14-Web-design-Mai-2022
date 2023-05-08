@@ -26,6 +26,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.UUID;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
@@ -66,6 +68,7 @@ public class Article extends ObjetBDD {
         this.idAuteur = idAuteur;
     }
 
+    @Cacheable("image")
     public String getImage() {
         return Image;
     }
@@ -356,6 +359,7 @@ public class Article extends ObjetBDD {
         return valiny;
     }
 
+    @Cacheable("articles")
     public Article[] ListeArticlePaginer(String t1, String t2, int page) throws Exception {
         Article[] la = new Article[0];
         Connection con = null;
