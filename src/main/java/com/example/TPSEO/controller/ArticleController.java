@@ -159,8 +159,9 @@ public class ArticleController {
             ResourceHttpRequestHandler handler = new ResourceHttpRequestHandler();
             handler.setLocations(Collections.singletonList(imageResource));
             handler.setCacheSeconds(86400);
-            handler.handleRequest(request, resp);
+            // handler.handleRequest(request, resp);
             model.addAttribute("lcu", new CategorieUne().ListeCategorieUne(null));
+            System.out.println("nandalo lcu");
         } catch (Exception e) {
             response = e.getMessage();
             e.printStackTrace();
